@@ -2,12 +2,9 @@ public class RubiksCube {
     //possible implementations: use faces or use edges / corners
 
     //~~~~~~~~~~INSTANCE VARIABLES
-    //3D cube
-    public static final int NUM_FACES = 6;
     //default colors of the faces
     public static String[] COLORS = {"w", "r", "b", "g", "o", "y"};
 
-    //faces contains all those faces, in that order
     private Face centerF, topF, leftF, rightF, bottomF, backF;
 
     private int sideLength;
@@ -26,14 +23,12 @@ public class RubiksCube {
 
     //~~~~~~~~~~METHODS
     //~~~Turns (i is counter-clockwise, 2 is double)
-    public void turn(String orient) {
-        String tail = "";
-        if (orient.length() > 1) {
-            tail = orient.substring(1);
-            orient = orient.substring(0, 1);
-        }
+    public void turn(String move) {
+        String head = move.substring(0, 1);
+        // tail empty if move.length == 1
+        String tail = move.substring(1);
         
-        switch (orient) {
+        switch (head) {
         case "f":
             break;
         case "u": rot("xi");
@@ -46,7 +41,7 @@ public class RubiksCube {
             break;
         case "b": rot("y2");
             break;
-        default: throw new IllegalArgumentException("Invalid orient: " + orient);
+        default: throw new IllegalArgumentException("Invalid move: " + move);
         }
 
         switch(tail) {
@@ -55,7 +50,7 @@ public class RubiksCube {
         default: fTurn();
         }
         
-        switch (orient) {
+        switch (head) {
         case "f":
             break;
         case "u": rot("x");
@@ -90,8 +85,8 @@ public class RubiksCube {
     }
     
     //~~~Cube Rotations (i is counter-clockwise, 2 is double)
-    public void rot(String orient) {
-        switch(orient) {
+    public void rot(String move) {
+        switch(move) {
         case "xi": xRot();
         case "x2": xRot();
         case "x": xRot();
@@ -104,7 +99,7 @@ public class RubiksCube {
         case "z2": zRot();
         case "z": zRot();
             break;
-        default: throw new IllegalArgumentException("Invalid orient: " + orient);
+        default: throw new IllegalArgumentException("Invalid move: " + move);
         }
     }
     public void xRot() {
@@ -134,6 +129,7 @@ public class RubiksCube {
         xRot();
         yRot();
     }
+    
     //toString should output (w/ sideLength of 3):
     //   top
     //   top
@@ -171,13 +167,9 @@ public class RubiksCube {
         return retStr;
     }
 
-    public boolean equals(RubiksCube rc) {
-        return (centerF.equals(rc.centerF) &&
-                topF.equals(rc.topF) &&
-                leftF.equals(rc.leftF) &&
-                rightF.equals(rc.rightF) &&
-                bottomF.equals(rc.bottomF) &&
-                backF.equals(rc.backF));
+    public boolean allSame() {
+        return centerF.allSame() && topF.allSame() && leftF.allSame() &&
+            rightF.allSame() && bottomF.allSame() && backF.allSame();
     }
     
     //~~~~~~~~~~MAIN

@@ -54,17 +54,22 @@ public class Face {
         return retStr;
     }
 
-    public boolean equals(Face f) {
-        return Arrays.deepEquals(colors, f.colors);
+    public boolean allSame() {
+        String c = colors[0][0];
+        for (String[] r : colors) {
+            for (String s : r) {
+                if (s != c) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
     
     //~~~~~~~~~~MAIN
     public static void main(String[] args) {
         Face f = new Face("w", 3);
         System.out.println(f);
-        
-        Face f2 = new Face("b", 3);
-        System.out.println(f.equals(f2));
         
         /*
           String[][] newColors = {

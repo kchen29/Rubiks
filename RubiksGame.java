@@ -49,12 +49,15 @@ public class RubiksGame {
         }
         System.out.print(s);
 
-        try {
-            game_mode = in.readLine();
-    	}
-    	catch ( IOException e ) { }
+        for (;;) {
+            try {
+                game_mode = in.readLine();
+            }
+            catch ( IOException e ) { }
         
-        if (!in(PLAY_MODES[1], game_mode)) {
+            if (in(PLAY_MODES[1], game_mode)) {
+                break;
+            }
             s = "Could not understand input. Please type ";
             for (int i = 0; i < PLAY_MODES[1].length; i++) {
                 if (i == PLAY_MODES[1].length - 1) {
@@ -64,7 +67,6 @@ public class RubiksGame {
                 }
             }
             System.out.println(s);
-            game_mode = "fp";
         }
         
         s = "Game mode is: " + game_mode;
@@ -75,118 +77,107 @@ public class RubiksGame {
         return java.util.Arrays.asList(arr).indexOf(s) != -1;
     }
     
-    public boolean play() {
+    public void play() {
         if (game_mode.equals("fp")) {
-            return freePlay();
+            freePlay();
         } else {
-            return solveScrambled();
+            solveScrambled();
         }
     }
-    public boolean freePlay() {
+    public void freePlay() {
         RubiksCube rc = new RubiksCube(3);
         System.out.println(rc);
 
         String moves = "";
         for (;;) {
-            System.out.print("Move(s): ");
-            try {
-                moves = in.readLine();
-            }
-            catch ( IOException e ) { }
-            
-            if (moves.equals("q")) {
+            moves = queryMoves();
+            if (moves.equals("q"))
                 break;
-            }
-            if (!movesAction(rc, moves)) {
-                System.out.println("Could not recognize " + moves + "\nTry again.");
-            } else {
+            if (movesAction(rc, moves))
                 System.out.println(rc);
-            }
+            else
+                System.out.println("Could not recognize " + moves + "\nTry again.");
         }
-        
-        return false;
     }
-    public boolean solveScrambled() {
-        RubiksCube winningC = new RubiksCube(3);
+    public String queryMoves() {
+        String moves = "";
+        System.out.print("Move(s): ");
+        try {
+            moves = in.readLine();
+        }
+        catch ( IOException e ) { }
+        return moves;
+    }
+    public void solveScrambled() {
         RubiksCube rc = new RubiksCube(3);
         
-        int scrambleTimes = chooseTimesToScramble();
-        scramble(rc, scrambleTimes);
+        scramble(rc);
         System.out.println(rc);
 
         String moves = "";
         for (;;) {
-            System.out.print("Move(s): ");
-            try {
-                moves = in.readLine();
-            }
-            catch ( IOException e ) { }
-            
-            if (moves.equals("q")) {
+            moves = queryMoves();
+            if (moves.equals("q"))
                 break;
-            }
-            if (!movesAction(rc, moves)) {
-                System.out.println("Could not recognize " + moves + "\nTry again.");
-            } else {
+            if (movesAction(rc, moves)) {
                 System.out.println(rc);
-                
-                if (rc.equals(winningC)) {
-                    System.out.println("Congrats! You solved it.");
+                if (rc.allSame()) {
+                    System.out.println("Congratulations! You solved it.");
                     break;
                 }
+            } else {
+                System.out.println("Could not recognize " + moves + "\nTry again.");
             }
         }
-        return false;
     }
-    public int chooseTimesToScramble() {
-        System.out.println("How many times to scramble the cube?");
-        int scrambleTimes = 1;
+    public void scramble(RubiksCube rc) {
+        int scrambleLength = queryScrambleLength();
+        scramble(rc, scrambleLength);
+    }
+    public int queryScrambleLength() {
+        System.out.println("How long is the scramble?");
+        int scrambleLength = 1;
 
         try {
-            scrambleTimes = Integer.parseInt(in.readLine());
+            scrambleLength = Integer.parseInt(in.readLine());
         }
         catch ( IOException e ) { }
 
-        if (scrambleTimes < 1) {
-            scrambleTimes = 1;
+        if (scrambleLength < 1) {
+            scrambleLength = 1;
         }
         
-        return scrambleTimes;
+        return scrambleLength;
     }
-    public void scramble(RubiksCube rc, int scrambleTimes) {
+    public void scramble(RubiksCube rc, int scrambleLength) {
         String scrambleSequence = "";
         int tml = TURN_MOVES[0].length;
         int rml = ROT_MOVES[0].length;
         int totMoves = tml + rml;
-        //maximum possible moves; include for i and 2;
-        int maxMoves = (tml + rml) * 3;
-        
-        // [0, totMoves - 1] : move
-        // [totMoves, 2 * totMoves - 1] : move2
-        // [2 * totMoves, 3 * totMoves - 1] : movei
-        // [0, tml - 1] : tml move
-        for (int i = 0; i < scrambleTimes; i++) {
-            int random = (int)(Math.random() * maxMoves);
+
+        String head, tail;
+        for (int i = 0; i < scrambleLength; i++) {
+            int random1 = (int)(Math.random() * totMoves);
+            int random2 = (int)(Math.random() * 3);
             
-            String tail = "";
-            if (random >= 2 * totMoves) {
-                tail = "i";
-                random -= 2 * totMoves;
-            } else if (random >= totMoves) {
-                tail = "2";
-                random -= totMoves;
+            // [0, tml - 1] : tml move
+            if (random1 < tml) {
+                head = TURN_MOVES[0][random1];
+            } else {
+                random1 -= tml;
+                head = ROT_MOVES[0][random1];
             }
             
-            String head = "";
-            if (random < tml) {
-                head = TURN_MOVES[0][random];
-            } else {
-                random -= tml;
-                head = ROT_MOVES[0][random];
+            switch (random2) {
+            case 2: tail = "i";
+                break;
+            case 1: tail = "2";
+                break;
+            default: tail = "";
             }
             
             String move = head + tail;
-            scrambleSequence += move;
+            scrambleSequence += move + " ";
             moveAction(rc, move);
         }
         System.out.println(scrambleSequence);
@@ -199,6 +190,11 @@ public class RubiksGame {
         int i = 0;
         while (i < moves.length()) {
             String add = moves.substring(i, i + 1);
+            if (add.equals(" ")) {
+                i++; //skip spaces
+                continue;
+            }
+                
             if (!in(TURN_MOVES[0], add) && !in(ROT_MOVES[0], add)) {
                 return false;
             }
@@ -219,7 +215,6 @@ public class RubiksGame {
         }
         return true;
     }
-    
     public boolean moveAction(RubiksCube rc, String move) {
         String head = move.substring(0, 1);
         if (in(TURN_MOVES[0], head)) {
