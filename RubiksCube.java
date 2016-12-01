@@ -1,10 +1,11 @@
 public class RubiksCube {
     //possible implementations: use faces or use edges / corners
 
-    //~~~~~~~~~~INSTANCE VARIABLES
+    //~~~~~~~~~~STATIC VARIABLES
     //default colors of the faces
-    public static String[] COLORS = {"w", "r", "b", "g", "o", "y"};
+    public static final String[] COLORS = {"w", "r", "b", "g", "o", "y"};
 
+    //~~~~~~~~~~INSTANCE VARIABLES
     private Face centerF, topF, leftF, rightF, bottomF, backF;
 
     private int sideLength;
@@ -136,7 +137,8 @@ public class RubiksCube {
         xRot();
         yRot();
     }
-    
+
+    //~~~~~ToString
     //toString should output (w/ sideLength of 3):
     //   top
     //   top
@@ -174,6 +176,7 @@ public class RubiksCube {
         return retStr;
     }
 
+    //~~~~~AllSame
     public boolean allSame() {
         return centerF.allSame() && topF.allSame() && leftF.allSame() &&
             rightF.allSame() && bottomF.allSame() && backF.allSame();

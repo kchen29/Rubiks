@@ -3,9 +3,10 @@ import java.util.*;
 
 public class RubiksGame {
     
-    //~~~~~~~~~~INSTANCE VARIABLES
+    //~~~~~~~~~~STATIC VARIABLES
     public static final String[][] PLAY_MODES = {{"Free-play", "Solve Scrambled"}, {"fp", "ss"}};
-
+    
+    //~~~~~~~~~~INSTANCE VARIABLES
     private String game_mode;
     
     private InputStreamReader isr;
@@ -19,6 +20,7 @@ public class RubiksGame {
     }
 
     //~~~~~~~~~~METHODS
+    //~~~~~NewGame
     public void newGame() {
         System.out.println("Welcome to Rubik's Game!\n");
         instructions();
@@ -66,7 +68,8 @@ public class RubiksGame {
         s = "Game mode is: " + game_mode;
         System.out.println(s);
     }
-    
+
+    //~~~~~Play
     public void play() {
         if (game_mode.equals("fp")) {
             freePlay();
@@ -88,15 +91,6 @@ public class RubiksGame {
             else
                 System.out.println("Could not recognize " + moves + "\nTry again.");
         }
-    }
-    public String queryMoves() {
-        String moves = "";
-        System.out.print("Move(s): ");
-        try {
-            moves = in.readLine();
-        }
-        catch ( IOException e ) { }
-        return moves;
     }
     public void solveScrambled() {
         RubiksCube rc = new RubiksCube(3);
@@ -120,6 +114,19 @@ public class RubiksGame {
             }
         }
     }
+
+    //~~~QueryMoves
+    public String queryMoves() {
+        String moves = "";
+        System.out.print("Move(s): ");
+        try {
+            moves = in.readLine();
+        }
+        catch ( IOException e ) { }
+        return moves;
+    }
+    
+    //~~~Scramble
     public void scramble(RubiksCube rc) {
         int scrambleLength = queryScrambleLength();
         scramble(rc, scrambleLength);
@@ -141,7 +148,7 @@ public class RubiksGame {
     }
     public void scramble(RubiksCube rc, int scrambleLength) {
         String scrambleSequence = "";
-        
+       
         String head, tail, move;
         for (int i = 0; i < scrambleLength; i++) {
             head = Arr.chooseRandom(Move.ALL_MOVES);
@@ -154,6 +161,7 @@ public class RubiksGame {
         System.out.println(scrambleSequence);
     }
 
+    //~~~MovesAction
     public boolean movesAction(RubiksCube rc, String moves) {
         List<String> moveSequence = new ArrayList<String>();
 
@@ -183,7 +191,6 @@ public class RubiksGame {
         }
         return true;
     }
-
 
     //~~~~~~~~~~MAIN
     public static void main(String[] args) {

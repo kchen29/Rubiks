@@ -1,5 +1,7 @@
 //mimick static class behavior
 public final class Move {
+    
+    //~~~~~~~~~~STATIC VARIABLES
     public static final String[] ALL_MOVES = {"f", "u", "l", "r", "d", "b",
                                               "x", "y", "z"};
     public static final String[] ALL_MOVES_DESC = {"Front turn", "Up turn", "Left turn", "Right turn", "Down turn", "Back turn",
@@ -9,9 +11,11 @@ public final class Move {
     public static final String[] ROT_MOVES = {"x", "y", "z"};
 
     public static final String[] APPEND_MOVES = {"", "2", "i"};
-    
+
+    //~~~~~~~~~~CONSTRUCTOR
     private Move() {}
-    
+
+    //~~~~~~~~~~METHODS
     public static String head(String move) {
         return move.substring(0, 1);
     }

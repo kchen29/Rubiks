@@ -1,4 +1,6 @@
 public final class Arr {
+
+    //~~~~~~~~~~METHODS
     public static boolean in(String[] arr, String s) {
         //https://stackoverflow.com/questions/4962361/where-is-javas-array-indexof
         return java.util.Arrays.asList(arr).indexOf(s) != -1;
