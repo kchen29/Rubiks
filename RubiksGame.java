@@ -4,9 +4,6 @@ import java.util.*;
 public class RubiksGame {
     
     //~~~~~~~~~~INSTANCE VARIABLES
-    public static final String[][] TURN_MOVES = {{"f", "u", "l", "r", "d", "b"},
-                                                 {"Front turn", "Up turn", "Left turn", "Right turn", "Down turn", "Back turn"}};
-    public static final String[][] ROT_MOVES = {{"x", "y", "z"}, {"x rotation", "y rotation", "z rotation"}};
     public static final String[][] PLAY_MODES = {{"Free-play", "Solve Scrambled"}, {"fp", "ss"}};
 
     private String game_mode;
@@ -31,11 +28,11 @@ public class RubiksGame {
     public void instructions() {
         String s;
         s = "Instructions: To play, type in a move, and the cube will move accordingly:\n";
-        for (int i = 0; i < TURN_MOVES[0].length; i++) {
-            s += "\t" + TURN_MOVES[0][i] + ": " + TURN_MOVES[1][i] + "\n";
+        for (int i = 0; i < Move.TURN_MOVES[0].length; i++) {
+            s += "\t" + Move.TURN_MOVES[0][i] + ": " + Move.TURN_MOVES[1][i] + "\n";
         }
-        for (int i = 0; i < ROT_MOVES[0].length; i++) {
-            s += "\t" + ROT_MOVES[0][i] + ": " + ROT_MOVES[1][i] + "\n";
+        for (int i = 0; i < Move.ROT_MOVES[0].length; i++) {
+            s += "\t" + Move.ROT_MOVES[0][i] + ": " + Move.ROT_MOVES[1][i] + "\n";
         }
         s += "\n'i' and '2' can be appended to these moves to do inverse and double, respectively\n";
         s += "\n" + "Press 'q' in-game to quit\n";
@@ -55,7 +52,7 @@ public class RubiksGame {
             }
             catch ( IOException e ) { }
         
-            if (in(PLAY_MODES[1], game_mode)) {
+            if (Arr.in(PLAY_MODES[1], game_mode)) {
                 break;
             }
             s = "Could not understand input. Please type ";
@@ -71,10 +68,6 @@ public class RubiksGame {
         
         s = "Game mode is: " + game_mode;
         System.out.println(s);
-    }
-    public boolean in(String[] arr, String s) {
-        //https://stackoverflow.com/questions/4962361/where-is-javas-array-indexof
-        return java.util.Arrays.asList(arr).indexOf(s) != -1;
     }
     
     public void play() {
@@ -151,30 +144,15 @@ public class RubiksGame {
     }
     public void scramble(RubiksCube rc, int scrambleLength) {
         String scrambleSequence = "";
-        int tml = TURN_MOVES[0].length;
-        int rml = ROT_MOVES[0].length;
-        int totMoves = tml + rml;
+        int totMoves = Move.ALL_MOVES.length;
 
         String head, tail;
         for (int i = 0; i < scrambleLength; i++) {
             int random1 = (int)(Math.random() * totMoves);
             int random2 = (int)(Math.random() * 3);
-            
-            // [0, tml - 1] : tml move
-            if (random1 < tml) {
-                head = TURN_MOVES[0][random1];
-            } else {
-                random1 -= tml;
-                head = ROT_MOVES[0][random1];
-            }
-            
-            switch (random2) {
-            case 2: tail = "i";
-                break;
-            case 1: tail = "2";
-                break;
-            default: tail = "";
-            }
+
+            head = Move.ALL_MOVES[random1];
+            tail = Move.APPEND_MOVES[random2];
             
             String move = head + tail;
             scrambleSequence += move + " ";
@@ -187,15 +165,13 @@ public class RubiksGame {
         List<String> moveSequence = new ArrayList<String>();
 
         //parse
-        int i = 0;
-        while (i < moves.length()) {
+        for (int i = 0; i < moves.length(); i++) {
             String add = moves.substring(i, i + 1);
             if (add.equals(" ")) {
-                i++; //skip spaces
-                continue;
+                continue; //skip spaces
             }
                 
-            if (!in(TURN_MOVES[0], add) && !in(ROT_MOVES[0], add)) {
+            if (!Move.isMove(add)) {
                 return false;
             }
 
@@ -207,7 +183,6 @@ public class RubiksGame {
                 }
             }
             moveSequence.add(add);
-            i++;
         }
         
         for (String move : moveSequence) {
@@ -215,14 +190,12 @@ public class RubiksGame {
         }
         return true;
     }
-    public boolean moveAction(RubiksCube rc, String move) {
-        String head = move.substring(0, 1);
-        if (in(TURN_MOVES[0], head)) {
+    public void moveAction(RubiksCube rc, String move) {
+        if (Move.isTurnMove(move)) {
             rc.turn(move);
         } else {
             rc.rot(move);
         }
-        return true;
     }
 
     //~~~~~~~~~~MAIN

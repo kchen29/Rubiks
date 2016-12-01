@@ -24,9 +24,8 @@ public class RubiksCube {
     //~~~~~~~~~~METHODS
     //~~~Turns (i is counter-clockwise, 2 is double)
     public void turn(String move) {
-        String head = move.substring(0, 1);
-        // tail empty if move.length == 1
-        String tail = move.substring(1);
+        String head = Move.head(move);
+        String tail = Move.tail(move);
         
         switch (head) {
         case "f":
