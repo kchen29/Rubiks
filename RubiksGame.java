@@ -28,11 +28,8 @@ public class RubiksGame {
     public void instructions() {
         String s;
         s = "Instructions: To play, type in a move, and the cube will move accordingly:\n";
-        for (int i = 0; i < Move.TURN_MOVES[0].length; i++) {
-            s += "\t" + Move.TURN_MOVES[0][i] + ": " + Move.TURN_MOVES[1][i] + "\n";
-        }
-        for (int i = 0; i < Move.ROT_MOVES[0].length; i++) {
-            s += "\t" + Move.ROT_MOVES[0][i] + ": " + Move.ROT_MOVES[1][i] + "\n";
+        for (int i = 0; i < Move.ALL_MOVES.length; i++) {
+            s += "\t" + Move.ALL_MOVES[i] + ": " + Move.ALL_MOVES_DESC[i] + "\n";
         }
         s += "\n'i' and '2' can be appended to these moves to do inverse and double, respectively\n";
         s += "\n" + "Press 'q' in-game to quit\n";
