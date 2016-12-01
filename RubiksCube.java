@@ -22,6 +22,14 @@ public class RubiksCube {
     }
 
     //~~~~~~~~~~METHODS
+    //~~~~~MoveAction
+    public void moveAction(String move) {
+        if (Move.isTurnMove(move))
+            turn(move);
+        else
+            rot(move);
+    }
+    
     //~~~Turns (i is counter-clockwise, 2 is double)
     public void turn(String move) {
         String head = Move.head(move);

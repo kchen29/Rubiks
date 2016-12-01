@@ -141,19 +141,15 @@ public class RubiksGame {
     }
     public void scramble(RubiksCube rc, int scrambleLength) {
         String scrambleSequence = "";
-        int totMoves = Move.ALL_MOVES.length;
-
-        String head, tail;
+        
+        String head, tail, move;
         for (int i = 0; i < scrambleLength; i++) {
-            int random1 = (int)(Math.random() * totMoves);
-            int random2 = (int)(Math.random() * 3);
-
-            head = Move.ALL_MOVES[random1];
-            tail = Move.APPEND_MOVES[random2];
+            head = Arr.chooseRandom(Move.ALL_MOVES);
+            tail = Arr.chooseRandom(Move.APPEND_MOVES);
             
-            String move = head + tail;
+            move = head + tail;
             scrambleSequence += move + " ";
-            moveAction(rc, move);
+            rc.moveAction(move);
         }
         System.out.println(scrambleSequence);
     }
@@ -183,17 +179,11 @@ public class RubiksGame {
         }
         
         for (String move : moveSequence) {
-            moveAction(rc, move);
+            rc.moveAction(move);
         }
         return true;
     }
-    public void moveAction(RubiksCube rc, String move) {
-        if (Move.isTurnMove(move)) {
-            rc.turn(move);
-        } else {
-            rc.rot(move);
-        }
-    }
+
 
     //~~~~~~~~~~MAIN
     public static void main(String[] args) {

@@ -3,4 +3,9 @@ public final class Arr {
         //https://stackoverflow.com/questions/4962361/where-is-javas-array-indexof
         return java.util.Arrays.asList(arr).indexOf(s) != -1;
     }
+
+    public static String chooseRandom(String[] arr) {
+        int random = (int)(Math.random() * arr.length);
+        return arr[random];
+    }
 }
